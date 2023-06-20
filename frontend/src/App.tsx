@@ -1,9 +1,11 @@
 import React from "react";
 
 const App: React.FC = () => {
-    return (
-      <div>"Hello world"</div>
-    )
+    return <div>{helloFunction()}</div>;
 };
 
-export default App
+function helloFunction(): string {
+    return "hello world";
+}
+
+export default App;
