@@ -1,25 +1,18 @@
-import akka.actor.typed.ActorSystem
-import akka.actor.typed.javadsl.Behaviors
-import akka.http.scaladsl.Http
+import cats.effect._
+import com.comcast.ip4s.IpLiteralSyntax
+import org.http4s.ember.server.EmberServerBuilder
 
-import scala.concurrent.ExecutionContext
+object Application extends IOApp {
 
-object Application extends App {
-
-  private def runApplication(): Unit = {
-    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "law-engine")
-    implicit val executionContext: ExecutionContext = system.executionContext
-
-    initializeServer()
+  override def run(args: List[String]): IO[ExitCode] = {
+    EmberServerBuilder
+      .default[IO]
+      .withHost(ipv4"0.0.0.0")
+      .withPort(port"8080")
+      .withHttpApp(Routes.helloService)
+      .build
+      .use(_ => IO.never)
+      .as(ExitCode.Success)
   }
 
-  private def initializeServer()(implicit
-      ec: ExecutionContext,
-      actorSystem: ActorSystem[Nothing]
-  ): Unit = {
-    val rootRoute = new RootRoute().route
-    Http().newServerAt("localhost", 8080).bind(rootRoute)
-  }
-
-  runApplication()
 }
