@@ -1,36 +1,33 @@
 {
-  "env": {
-    "browser": true,
-    "es2022": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "prettier"
-  ],
-  "plugins": [
-    "react",
-    "@typescript-eslint"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
+    "env": {
+        "browser": true,
+        "es2022": true,
+        "node": true
     },
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
-  "settings": {
-    "react": {
-      "version": "999.999.999"
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "prettier"
+    ],
+    "plugins": ["react", "@typescript-eslint"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "settings": {
+        "react": {
+            "version": "999.999.999"
+        }
+    },
+    "rules": {
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+        "indent": ["error", 4]
     }
-  },
-  "rules": {
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
-    "indent": ["error", 4]
-  }
 }
