@@ -1,6 +1,7 @@
 import React from "react";
 import { Theme, ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
+import { CssBaseline } from "@mui/material";
 
 const theme: Theme = {
     colors: {
@@ -20,9 +21,11 @@ const AppContainer = styled.div<{ theme?: Theme }>(({ theme }) => ({
 
 const App: React.FC = () => {
     return (
-        <ThemeProvider theme={theme}>
-            <AppContainer></AppContainer>
-        </ThemeProvider>
+        <CssBaseline>
+            <ThemeProvider theme={theme}>
+                <AppContainer></AppContainer>
+            </ThemeProvider>
+        </CssBaseline>
     );
 };
 
