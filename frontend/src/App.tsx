@@ -2,6 +2,7 @@ import React from "react";
 import { Theme, ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CssBaseline } from "@mui/material";
+import Graph from "./components/Graph";
 
 const theme: Theme = {
     colors: {
@@ -27,14 +28,16 @@ const AppContainer = styled.div<{ theme?: Theme }>(({ theme }) => ({
     height: "100vh",
 }));
 
-const App: React.FC = () => {
+function App() {
     return (
         <CssBaseline>
             <ThemeProvider theme={theme}>
-                <AppContainer></AppContainer>
+                <AppContainer>
+                    <Graph></Graph>
+                </AppContainer>
             </ThemeProvider>
         </CssBaseline>
     );
-};
+}
 
 export default App;
