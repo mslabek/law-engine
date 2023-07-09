@@ -1,9 +1,4 @@
-import {
-    Background,
-    BackgroundVariant,
-    ReactFlow,
-    useNodesState,
-} from "reactflow";
+import { Background, BackgroundVariant, ReactFlow, useEdgesState, useNodesState } from "reactflow";
 import "reactflow/dist/style.css";
 import React from "react";
 import CustomNode from "./Node";
@@ -15,15 +10,19 @@ const nodeTypes = {
 function Graph() {
     const proOptions = { hideAttribution: true };
 
-    const [nodes, _, onNodesChange] = useNodesState(initialNodes);
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     return (
         <div style={{ height: "100%", width: "100%" }}>
             <ReactFlow
                 nodes={nodes}
+                edges={edges}
                 onNodesChange={onNodesChange}
-                proOptions={proOptions}
+                onEdgesChange={onEdgesChange}
                 nodeTypes={nodeTypes}
+                proOptions={proOptions}
+                fitView={true}
             >
                 <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
             </ReactFlow>
@@ -35,35 +34,34 @@ export default Graph;
 
 const initialNodes = [
     {
-        id: '1',
-        type: 'custom',
+        id: "1",
+        type: "custom",
         data: {
-            label: "Node 1"
+            label: "Node 1",
         },
         position: { x: 0, y: 0 },
     },
     {
-        id: '2',
-        type: 'custom',
+        id: "2",
+        type: "custom",
         data: {
-            label: "Node 2"
+            label: "Node 2",
         },
-        position: { x: 250, y: 250 },
+        position: { x: 200, y: 0 },
+    },
+];
+
+const initialEdges = [
+    {
+        id: "e1",
+        source: "1",
+        target: "2",
+        type: "smoothstep",
     },
     {
-        id: '3',
-        type: 'custom',
-        data: {
-            label: "Node 3"
-        },
-        position: { x: 0, y: 250 },
-    },
-    {
-        id: '4',
-        type: 'custom',
-        data: {
-            label: "Node 4"
-        },
-        position: { x: 250, y: 0 },
+        id: "e2",
+        source: "2",
+        target: "1",
+        type: "smoothstep",
     },
 ];
