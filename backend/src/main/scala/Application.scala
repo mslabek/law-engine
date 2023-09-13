@@ -1,4 +1,4 @@
-import api.GraphEndpoints
+import api.{StubGraphApi, ValidationApi}
 import cats.effect._
 import com.comcast.ip4s.{Host, Port}
 import org.http4s.ember.server.EmberServerBuilder
@@ -9,7 +9,9 @@ object Application extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
 
-    val routes = Http4sServerInterpreter[IO]().toRoutes(GraphEndpoints.helloServerEndpoint)
+    val routes = Http4sServerInterpreter[IO]().toRoutes(
+      StubGraphApi.graphServerEndpoint :: ValidationApi.validationServerEndpoint :: Nil
+    )
 
     val port = Port.fromInt(8080).get
 

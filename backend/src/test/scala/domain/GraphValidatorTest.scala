@@ -58,7 +58,7 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
     val node2 = Node(testUUID2)
     val relation = Relation(testUUID3, node1, node2)
 
-    val graph = Graph(graphId,Seq(node1), Seq(relation))
+    val graph = Graph(graphId, Seq(node1), Seq(relation))
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isInvalid shouldBe true

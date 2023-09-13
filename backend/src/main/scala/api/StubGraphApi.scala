@@ -1,22 +1,23 @@
 package api
 
 import cats.effect.IO
-import domain.{Graph, Node, Relation}
-import sttp.tapir._
-import sttp.tapir.json.circe._
-import sttp.tapir.generic.auto._
-import sttp.tapir.server.ServerEndpoint
+import domain._
 import io.circe.generic.auto._
+import sttp.tapir._
+import sttp.tapir.generic.auto._
+import sttp.tapir.json.circe._
+import sttp.tapir.server.ServerEndpoint.Full
 
 import java.util.UUID
 
-object GraphEndpoints {
+object StubGraphApi {
 
-  private val stubGraphEndpoint: PublicEndpoint[Unit, Unit, Graph, Any] = endpoint.get
-    .in("hello")
+  private val graphEndpoint: PublicEndpoint[Unit, Unit, Graph, Any] = endpoint.get
+    .in("graph" / "stub")
     .out(jsonBody[Graph])
 
-  val helloServerEndpoint: ServerEndpoint[Any, IO] = stubGraphEndpoint.serverLogicSuccess(_ => IO.pure(stubGraph))
+  val graphServerEndpoint: Full[Unit, Unit, Unit, Unit, Graph, Any, IO] =
+    graphEndpoint.serverLogicSuccess(_ => IO.pure(stubGraph))
 
   private val stubGraph: Graph = {
     val testUUID1 = UUID.fromString("00000000-0000-0000-0000-000000000001")
