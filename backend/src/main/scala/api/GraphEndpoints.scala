@@ -1,24 +1,22 @@
 package api
 
-import cats._
+import cats.effect.IO
 import domain.{Graph, Node, Relation}
-import org.http4s.circe._
-import io.circe.syntax._
+import sttp.tapir._
+import sttp.tapir.json.circe._
+import sttp.tapir.generic.auto._
+import sttp.tapir.server.ServerEndpoint
 import io.circe.generic.auto._
-import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
 
 import java.util.UUID
 
-object GraphRoutes {
+object GraphEndpoints {
 
-  def graphRoutes[F[_]: Monad]: HttpRoutes[F] = {
-    val dsl = Http4sDsl[F]
-    import dsl._
-    HttpRoutes.of[F] {
-      case GET -> Root / "graph" => Ok(stubGraph.asJson)
-    }
-  }
+  private val stubGraphEndpoint: PublicEndpoint[Unit, Unit, Graph, Any] = endpoint.get
+    .in("hello")
+    .out(jsonBody[Graph])
+
+  val helloServerEndpoint: ServerEndpoint[Any, IO] = stubGraphEndpoint.serverLogicSuccess(_ => IO.pure(stubGraph))
 
   private val stubGraph: Graph = {
     val testUUID1 = UUID.fromString("00000000-0000-0000-0000-000000000001")
@@ -29,5 +27,4 @@ object GraphRoutes {
     val relation = Relation(testUUID3, node1, node2)
     Graph(1, Seq(node1, node2), Seq(relation))
   }
-
 }
