@@ -2,6 +2,8 @@ package api
 
 import cats.effect.IO
 import domain._
+import domain.graph.{Node, Relation}
+import domain.scenario.{Properties, ScenarioGraph}
 import io.circe.generic.auto._
 import sttp.tapir._
 import sttp.tapir.generic.auto._

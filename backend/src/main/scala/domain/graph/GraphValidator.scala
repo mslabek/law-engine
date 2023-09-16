@@ -1,9 +1,9 @@
-package domain
+package domain.graph
 
 import cats.data.Validated._
 import cats.data._
 import cats.syntax.all._
-import domain.ValidatorUtils.duplicates
+import domain.graph.ValidatorUtils.duplicates
 
 object GraphValidator {
 

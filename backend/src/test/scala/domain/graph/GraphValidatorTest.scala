@@ -1,7 +1,8 @@
-package domain
+package domain.graph
 
 import cats.data._
-import domain.ValidatorTestUtils.{emptyNode, emptyRelation, errors}
+import domain.graph.ValidatorTestUtils.{emptyNode, emptyRelation, errors}
+import domain.scenario.{Properties, ScenarioGraph}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 

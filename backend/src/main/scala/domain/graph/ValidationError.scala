@@ -1,4 +1,4 @@
-package domain
+package domain.graph
 
 sealed trait ValidationError[C <: ElementContent] {
   val message: String
