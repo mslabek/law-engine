@@ -1,25 +1,25 @@
 package domain
 
-sealed trait ValidationError {
+sealed trait ValidationError[C <: ElementContent] {
   val message: String
-  val causes: Seq[Element]
+  val causes: Seq[Element[C]]
 }
 
-case class ElementIdNotUnique(elements: Seq[Element]) extends ValidationError {
+case class ElementIdNotUnique[C <: ElementContent](elements: Seq[Element[C]]) extends ValidationError[C] {
   override val message: String = s"Element id has to be unique. Non unique id: ${elements.head.id}."
-  override val causes: Seq[Element] = elements
+  override val causes: Seq[Element[C]] = elements
 }
 
-case class RelationNotUnique(relations: Seq[Relation]) extends ValidationError {
+case class RelationNotUnique[C <: ElementContent](relations: Seq[Relation[C]]) extends ValidationError[C] {
   override val message: String =
     s"""Relation between source and target node has to be unique.
        |Relations with the same source and target nodes ids: ${relations.map(_.id)}.
        |Source node id: ${relations.head.source}
        |Target node id: ${relations.head.target}""".stripMargin
-  override val causes: Seq[Element] = relations
+  override val causes: Seq[Element[C]] = relations
 }
 
-case class MissingNodeError(node: Node) extends ValidationError {
+case class MissingNodeError[C <: ElementContent](node: Node[C]) extends ValidationError[C] {
   override val message: String = s"Node referred to by a relation is missing. Node id: ${node.id}"
-  override val causes: Seq[Element] = Seq(node)
+  override val causes: Seq[Element[C]] = Seq(node)
 }

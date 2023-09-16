@@ -1,9 +1,9 @@
 package domain
 
+import cats.data._
+import domain.ValidatorTestUtils.{emptyNode, emptyRelation, errors}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import cats.data._
-import domain.ValidatorTestUtils.errors
 
 import java.util.UUID
 
@@ -16,21 +16,21 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
   private val graphId = 1L
 
   test("should not return any errors for valid graph") {
-    val node1 = Node(testUUID1)
-    val node2 = Node(testUUID2)
-    val relation = Relation(testUUID3, node1, node2)
+    val node1 = emptyNode(testUUID1)
+    val node2 = emptyNode(testUUID2)
+    val relation = emptyRelation(testUUID3, node1, node2)
 
-    val graph = Graph(graphId, Seq(node1, node2), Seq(relation))
+    val graph = ScenarioGraph(graphId, Seq(node1, node2), Seq(relation))
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isValid shouldBe true
   }
 
   test("should return error with duplicated ids") {
-    val node1 = Node(testUUID1)
-    val node2 = Node(testUUID1)
+    val node1 = emptyNode(testUUID1)
+    val node2 = emptyNode(testUUID1)
 
-    val graph = Graph(graphId, Seq(node1, node2), Nil)
+    val graph = ScenarioGraph(graphId, Seq(node1, node2), Nil)
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isInvalid shouldBe true
@@ -38,12 +38,12 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
   }
 
   test("should return multiple duplicated ids errors") {
-    val node1 = Node(testUUID1)
-    val node2 = Node(testUUID1)
-    val node3 = Node(testUUID2)
-    val node4 = Node(testUUID2)
+    val node1 = emptyNode(testUUID1)
+    val node2 = emptyNode(testUUID1)
+    val node3 = emptyNode(testUUID2)
+    val node4 = emptyNode(testUUID2)
 
-    val graph = Graph(graphId, Seq(node1, node2, node3, node4), Nil)
+    val graph = ScenarioGraph(graphId, Seq(node1, node2, node3, node4), Nil)
     val validatedGraph = GraphValidator.validate(graph)
 
     val duplicateError1 = ElementIdNotUnique(Seq(node1, node2))
@@ -54,11 +54,11 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
   }
 
   test("should return missing node error") {
-    val node1 = Node(testUUID1)
-    val node2 = Node(testUUID2)
-    val relation = Relation(testUUID3, node1, node2)
+    val node1 = emptyNode(testUUID1)
+    val node2 = emptyNode(testUUID2)
+    val relation = emptyRelation(testUUID3, node1, node2)
 
-    val graph = Graph(graphId, Seq(node1), Seq(relation))
+    val graph = ScenarioGraph(graphId, Seq(node1), Seq(relation))
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isInvalid shouldBe true
@@ -66,11 +66,11 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
   }
 
   test("should return multiple missing node errors") {
-    val node1 = Node(testUUID1)
-    val node2 = Node(testUUID2)
-    val relation = Relation(testUUID3, node1, node2)
+    val node1 = emptyNode(testUUID1)
+    val node2 = emptyNode(testUUID2)
+    val relation = emptyRelation(testUUID3, node1, node2)
 
-    val graph = Graph(graphId, Nil, Seq(relation))
+    val graph = ScenarioGraph(graphId, Nil, Seq(relation))
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isInvalid shouldBe true
@@ -81,12 +81,12 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
   }
 
   test("should return duplicate relation error") {
-    val node1 = Node(testUUID1)
-    val node2 = Node(testUUID2)
-    val relation1 = Relation(testUUID3, node1, node2)
-    val relation2 = Relation(testUUID4, node1, node2)
+    val node1 = emptyNode(testUUID1)
+    val node2 = emptyNode(testUUID2)
+    val relation1 = emptyRelation(testUUID3, node1, node2)
+    val relation2 = emptyRelation(testUUID4, node1, node2)
 
-    val graph = Graph(graphId, Seq(node1, node2), Seq(relation1, relation2))
+    val graph = ScenarioGraph(graphId, Seq(node1, node2), Seq(relation1, relation2))
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isInvalid shouldBe true
@@ -99,4 +99,9 @@ object ValidatorTestUtils {
   def errors[A](validated: Validated[Seq[A], _]): Seq[A] = {
     validated.toEither.left.getOrElse(Seq.empty)
   }
+
+  def emptyNode(id: Graph.ElementId): Node[Properties] = Node(id, Properties.empty)
+
+  def emptyRelation(id: Graph.ElementId, source: Node[Properties], target: Node[Properties]): Relation[Properties] =
+    Relation(id, source, target, Properties.empty)
 }
