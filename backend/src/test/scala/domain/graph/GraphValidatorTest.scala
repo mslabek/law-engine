@@ -2,7 +2,7 @@ package domain.graph
 
 import cats.data._
 import domain.graph.ValidatorTestUtils.{emptyNode, emptyRelation, errors}
-import domain.scenario.{Properties, ScenarioGraph}
+import domain.scenario.{Properties, ScenarioGraph, ScenarioNode, ScenarioRelation}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -63,7 +63,7 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
     val validatedGraph = GraphValidator.validate(graph)
 
     validatedGraph.isInvalid shouldBe true
-    errors(validatedGraph) should contain theSameElementsAs Seq(MissingNodeError(node2))
+    errors(validatedGraph) should contain theSameElementsAs Seq(NodeMissing(node2))
   }
 
   test("should return multiple missing node errors") {
@@ -76,8 +76,8 @@ class GraphValidatorTest extends AnyFunSuite with Matchers {
 
     validatedGraph.isInvalid shouldBe true
     errors(validatedGraph) should contain theSameElementsAs Seq(
-      MissingNodeError(node1),
-      MissingNodeError(node2)
+      NodeMissing(node1),
+      NodeMissing(node2)
     )
   }
 
@@ -101,8 +101,8 @@ object ValidatorTestUtils {
     validated.toEither.left.getOrElse(Seq.empty)
   }
 
-  def emptyNode(id: Graph.ElementId): Node[Properties] = Node(id, Properties.empty)
+  def emptyNode(id: Graph.ElementId): ScenarioNode = ScenarioNode(id, Properties.empty)
 
-  def emptyRelation(id: Graph.ElementId, source: Node[Properties], target: Node[Properties]): Relation[Properties] =
-    Relation(id, source, target, Properties.empty)
+  def emptyRelation(id: Graph.ElementId, source: ScenarioNode, target: ScenarioNode): ScenarioRelation =
+    ScenarioRelation(id, source, target, Properties.empty)
 }

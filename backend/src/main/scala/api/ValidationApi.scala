@@ -1,9 +1,7 @@
 package api
 
 import cats.effect.IO
-import domain.graph.{Element, GraphValidator}
-import domain.rule.Conditions
-import domain.scenario.{Properties, ScenarioGraph}
+import domain.scenario.{ScenarioElement, ScenarioGraph, ScenarioValidationResult, ScenarioValidator}
 import io.circe.generic.auto._
 import sttp.tapir._
 import sttp.tapir.generic.auto._
@@ -21,20 +19,27 @@ object ValidationApi {
   val validationServerEndpoint: Full[Unit, Unit, ScenarioGraph, Unit, ApiScenarioValidationResult, Any, IO] =
     scenarioValidationEndpoint.serverLogicSuccess(graph =>
       IO.pure(
-        ApiScenarioValidationResult(errors =
-          GraphValidator
-            .validate(graph)
-            .fold(identity, _ => Seq.empty)
-            .map(a => ApiScenarioValidationError(a.message, a.causes))
+        upcastErrorsUnsafe(ScenarioValidator.validate(graph))
+      )
+    )
+
+  private def upcastErrorsUnsafe(
+      validationResult: ScenarioValidationResult
+  ): ApiScenarioValidationResult = {
+    ApiScenarioValidationResult(
+      (validationResult.graphErrors ++ validationResult.scenarioErrors).map(e =>
+        ApiScenarioValidationError(
+          e.errorCode.asString,
+          e.message,
+          e.causes.map(el => el.asInstanceOf[ScenarioElement])
         )
       )
     )
+  }
 }
 
-case class ApiScenarioValidationResult(errors: Seq[ApiScenarioValidationError])
+case class ApiScenarioValidationResult(
+    errors: Seq[ApiScenarioValidationError]
+)
 
-case class ApiScenarioValidationError(message: String, elements: Seq[Element[Properties]])
-
-case class ApiRulesValidationResult(errors: Seq[ApiRulesValidationError])
-
-case class ApiRulesValidationError(message: String, elements: Seq[Element[Conditions]])
+case class ApiScenarioValidationError(errorCode: String, message: String, causes: Seq[ScenarioElement])

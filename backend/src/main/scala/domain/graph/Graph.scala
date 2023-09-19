@@ -7,21 +7,19 @@ object Graph {
   type ElementId = UUID
 }
 
-trait ElementContent
-
-trait Graph[C <: ElementContent] {
+trait Graph {
   val id: Graph.GraphId
-  val nodes: Seq[Node[C]]
-  val relations: Seq[Relation[C]]
+  val nodes: Seq[Node]
+  val relations: Seq[Relation]
 }
 
-sealed trait Element[C <: ElementContent] {
+sealed trait Element {
   val id: Graph.ElementId
-  val content: C
 }
 
-final case class Node[C <: ElementContent](id: Graph.ElementId, content: C) extends Element[C]
+trait Node extends Element
 
-final case class Relation[C <: ElementContent](id: Graph.ElementId, source: Node[C], target: Node[C], content: C)
-    extends Element[C]
-
+trait Relation extends Element {
+  val source: Node
+  val target: Node
+}

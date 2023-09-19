@@ -1,9 +1,7 @@
 package api
 
 import cats.effect.IO
-import domain._
-import domain.graph.{Node, Relation}
-import domain.scenario.{Properties, ScenarioGraph}
+import domain.scenario.{Properties, ScenarioGraph, ScenarioNode, ScenarioRelation}
 import io.circe.generic.auto._
 import sttp.tapir._
 import sttp.tapir.generic.auto._
@@ -25,9 +23,9 @@ object StubGraphApi {
     val testUUID1 = UUID.fromString("00000000-0000-0000-0000-000000000001")
     val testUUID2 = UUID.fromString("00000000-0000-0000-0000-000000000002")
     val testUUID3 = UUID.fromString("00000000-0000-0000-0000-000000000003")
-    val node1 = Node(testUUID1, Properties.empty)
-    val node2 = Node(testUUID2, Properties.empty)
-    val relation = Relation(testUUID3, node1, node2, Properties.empty)
+    val node1 = ScenarioNode(testUUID1, Properties.empty)
+    val node2 = ScenarioNode(testUUID2, Properties.empty)
+    val relation = ScenarioRelation(testUUID3, node1, node2, Properties.empty)
     ScenarioGraph(1, Seq(node1, node2), Seq(relation))
   }
 }
